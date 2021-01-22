@@ -5,7 +5,6 @@ import firestoreDB from '../../Firestore/Firestore';
 export default function Items({text, id, index}) {
 
     function handleTrash(){
-        // firestoreDB.database().ref('todos').child(getItems.id).remove();
         firestoreDB.collection("todoAuth").doc(id).delete();
         console.log(id);
     }

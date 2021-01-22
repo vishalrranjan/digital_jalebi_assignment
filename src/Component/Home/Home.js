@@ -23,8 +23,6 @@ const Home = () => {
                 }))
            );
        })
-       console.log(getItems.indexOf(getItems.id));
-
     },[]);
 
     const handleLogOut = () => {

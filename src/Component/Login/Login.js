@@ -20,7 +20,6 @@ const Login = () => {
 
     const handleSubmit = (e) =>{
         e.preventDefault();
-        // auth.auth().signInWithEmailAndPassword(email, password)
         auth.signInWithEmailAndPassword(email, password)
         .then(()=>{
             alert('Sign In successfully.');
