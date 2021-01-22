@@ -1,6 +1,6 @@
 # Assignment Of Digital Jalebi
 
-this app has been built acccording to instructions given by them.
+this app has been built acccording to the instructions given by Recruiters.
 
 ## Technologies
 Project is created with:

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import firestore from '../../Firestore/Firestore'; 
+import { auth } from '../../Firestore/Firestore'; 
 import './login.css';
 
 const Login = () => {
@@ -20,7 +20,8 @@ const Login = () => {
 
     const handleSubmit = (e) =>{
         e.preventDefault();
-        firestore.auth().signInWithEmailAndPassword(email, password)
+        // auth.auth().signInWithEmailAndPassword(email, password)
+        auth.signInWithEmailAndPassword(email, password)
         .then(()=>{
             alert('Sign In successfully.');
             localStorage.setItem('isLoggedIn', true);

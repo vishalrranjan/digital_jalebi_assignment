@@ -1,22 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import  { Link } from 'react-router-dom'
-import firestore from '../../Firestore/Firestore'
+import firestoreDB, { auth } from '../../Firestore/Firestore';
+
+
+import firebase from 'firebase';
 import './home.css'
+import Items from '../Items/Items';
 
 const Home = () => {
 
     // will fetched from firebase
-    const [items, setItems] = useState(
-            [
-                "A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart. I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine.",
-                "A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart. I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine.",
-                "A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart. I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine.",
-            ]
-        );
+    const [getItems, setGetItems] = useState([]);
     const [textfield, setTextfield] = useState('');
 
-    const handleSubmit = () => {
-        firestore.auth().signOut()
+    useEffect(()=>{
+        // getting Items
+       firestoreDB.collection("todoAuth").onSnapshot(function(querySnapshot) {
+           setGetItems(
+               querySnapshot.docs.map((doc) => ({
+                   id: doc.id,
+                   text: doc.data().text,
+                }))
+           );
+       })
+       console.log(getItems.indexOf(getItems.id));
+
+    },[]);
+
+    const handleLogOut = () => {
+        
+        auth.signOut()
         .then(()=>{
             alert('sign-out successfully');
             localStorage.setItem('isLoggedIn', false);
@@ -25,10 +38,6 @@ const Home = () => {
             alert('something wrong.');
             console.log(err);
         });
-
-        // firestore.auth().onAuthStateChanged((user)=>{
-        //     user ? alert('user Signed In') : alert('user not Signed In')
-        // });
     }
 
     function handleTextarea(e){
@@ -44,16 +53,17 @@ const Home = () => {
         if(textfield === ""){
             alert('Ahh ! You forgot to fill the textfield...');
         } else{
-            setItems([...items, textfield])
+            // firestoreDB.auth().onAuthStateChanged((user)=>{
+            //     user ? alert('user Signed In') : alert('user not Signed In')
+            // });
+    
+            firestoreDB.collection("todoAuth").add({
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                text: textfield,
+            })
             setTextfield('');
         }
     }
-
-    function handleTrash(e){
-        let deleteItem = e.target;
-        setItems()
-    }
-
 
     return (
         <div>
@@ -61,7 +71,7 @@ const Home = () => {
                 <nav>
                     <ul>
                         <li>
-                            <Link to="/" onClick={handleSubmit}> LOGOUT </Link>
+                            <Link to="/" onClick={handleLogOut}> LOGOUT </Link>
                         </li>
                     </ul>
                 </nav>
@@ -75,17 +85,8 @@ const Home = () => {
                     </div>
                     <div className="card-body">
                         {
-                            items.map( (item) => (
-                                <div key="item.index" className="card-body-container">
-                                    {/* <h5 className="item-index">{items.findIndex(item)}</h5> */}
-                                    <h5 className="item-index">1</h5>
-                                    <p className="card-body-item">
-                                        {item}
-                                    </p>
-                                    <button onClick={handleTrash} title="Delete" className="del-btn">
-                                        <img className="btn-image" src="https://img.icons8.com/color/48/000000/trash--v2.png" alt="Trash"/>
-                                    </button>
-                                </div>
+                            getItems.map( (item, index) => (
+                                <Items key={item.id} text={item.text} id={item.id} index={index} />
                             ))
                         }
                     </div>
